@@ -1,0 +1,91 @@
+<% const body=` 
+    <div style="margin-bottom: 24px;">
+        <h1 style="font-size: 32px; font-weight: 800; margin: 0 0 8px 0; letter-spacing: -.5px;">📋 Manage Items</h1>
+        <p style="color: var(--muted); margin: 0; font-size: 16px;">Tambah, edit, filter, dan kelola inventory items</p>
+    </div>
+
+    <div class="card">
+    <div style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:center; margin-bottom: 24px;">
+        <div>
+            <h3 style="margin:0; font-size: 20px;">Daftar Items</h3>
+            <div class="sub">Total ${(items || []).length} item${(items || []).length !== 1 ? 's' : ''}</div>
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a class="btn primary" href="/items/new">➕ Tambah Item</a>
+            <button class="btn" onclick="window.print()">🖨️ Print</button>
+        </div>
+    </div>
+
+    <form method="get" action="/items" class="form">
+        <div class="row">
+            <div class="field">
+                <label>🔍 Cari Nama Item</label>
+                <input class="input" name="q" placeholder="Ketik nama item..." value="${q || ""}" />
+            </div>
+            <div class="field">
+                <label>📂 Filter Kategori</label>
+                <select class="input" name="category">
+                    <option value="">Semua kategori</option>
+                    ${["Drug","Circulation","Airway","Breathing","Fluid"].map(cat =>
+                    `<option value="${cat}" ${category===cat ? "selected" :""}>${cat}</option>`
+                    ).join("")}
+                </select>
+            </div>
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn primary" type="submit">🔍 Filter</button>
+            <a class="btn" href="/items">🔄 Reset</a>
+        </div>
+    </form>
+
+    <div style="height:24px"></div>
+
+    <div style="overflow-x: auto;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nama Item</th>
+                <th>Kategori</th>
+                <th>Stok</th>
+                <th>Min Stok</th>
+                <th>Tanggal Expired</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${(items || []).length === 0 ? `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: var(--muted);">
+                        <div style="font-size: 48px; margin-bottom: 12px;">📦</div>
+                        <div style="font-size: 16px; font-weight: 600;">Belum ada item</div>
+                        <div style="font-size: 14px; margin-top: 8px;">Silakan tambah item baru untuk memulai</div>
+                    </td>
+                </tr>
+            ` : (items || []).map(it => {
+            const low = it.stock < it.minStock; const exp=it.expiredAt ? it.expiredAt.toISOString().slice(0,10) : "-" ;
+                return ` <tr>
+                <td style="font-weight: 600;">${it.name}</td>
+                <td><span class="badge">${it.category}</span></td>
+                <td>
+                    <span style="font-weight: 600; color: ${low ? '#ff9090' : 'var(--ok)'};">${it.stock} ${it.unit}</span>
+                    ${low ? `<span class="badge danger" style="margin-left: 8px;">⚠️ Low</span>` : ""}
+                </td>
+                <td style="color: var(--muted);">${it.minStock}</td>
+                <td style="${it.expiredAt ? 'font-weight: 500;' : 'color: var(--muted);'}">${exp}</td>
+                <td>
+                    <div class="table-actions">
+                        <a class="btn" href="/items/${it.id}/edit">✏️ Edit</a>
+                        <form method="post" action="/items/${it.id}/delete" style="margin:0">
+                            <button class="btn danger" onclick="return confirm('Yakin ingin menghapus item ini?')" type="submit">🗑️ Hapus</button>
+                        </form>
+                    </div>
+                </td>
+                </tr>`;
+                }).join("")}
+        </tbody>
+    </table>
+    </div>
+    </div>
+    `;
+    %>
+    <%- include("layout", { title: "Items" , body, user }) %>

@@ -1,0 +1,67 @@
+<% const isEdit=!!item; const body=` 
+    <div style="margin-bottom: 24px;">
+        <h1 style="font-size: 32px; font-weight: 800; margin: 0 0 8px 0; letter-spacing: -.5px;">${isEdit ? '✏️ Edit' : '➕ Tambah'} Item</h1>
+        <p style="color: var(--muted); margin: 0; font-size: 16px;">Lengkapi informasi detail item inventory</p>
+    </div>
+
+    <div class="card" style="max-width: 900px;">
+    <div style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; align-items:center; margin-bottom: 24px;">
+        <div>
+            <h3 style="margin:0; font-size: 20px;">${isEdit ? 'Update' : 'Buat'} Data Item</h3>
+            <div class="sub">Masukkan detail lengkap untuk ${isEdit ? 'mengupdate' : 'menambahkan'} item</div>
+        </div>
+        <a class="btn" href="/items">← Kembali</a>
+    </div>
+
+    <form class="form" method="post" action="${isEdit ? (" /items/"+item.id+"/edit") : "/items/new" }">
+        <div class="row">
+            <div class="field">
+                <label>📝 Nama Item</label>
+                <input class="input" name="name" required value="${item?.name || ""}" placeholder="Contoh: Paracetamol 500mg" />
+            </div>
+            <div class="field">
+                <label>📂 Kategori</label>
+                <select class="input" name="category" required>
+                    <option value="">Pilih kategori...</option>
+                    ${["Drug","Circulation","Airway","Breathing","Fluid"].map(cat =>
+                    `<option value="${cat}" ${item?.category===cat ? "selected" :""}>${cat}</option>`
+                    ).join("")}
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="field">
+                <label>📊 Jumlah Stok</label>
+                <input class="input" name="stock" type="number" min="0" value="${item?.stock ?? 0}" placeholder="0" />
+            </div>
+            <div class="field">
+                <label>📏 Satuan</label>
+                <input class="input" name="unit" value="${item?.unit || " pcs"}" placeholder="pcs, box, botol, dll" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="field">
+                <label>⚠️ Minimum Stok (Alert)</label>
+                <input class="input" name="minStock" type="number" min="0" value="${item?.minStock ?? 5}" placeholder="5" />
+                <div class="sub" style="margin-top: 8px;">Alert akan muncul jika stok di bawah nilai ini</div>
+            </div>
+            <div class="field">
+                <label>⏰ Tanggal Expired</label>
+                <input class="input" name="expiredAt" type="date"
+                    value="${item?.expiredAt ? item.expiredAt.toISOString().slice(0,10) : ""}" />
+                <div class="sub" style="margin-top: 8px;">Opsional - kosongkan jika tidak ada</div>
+            </div>
+        </div>
+
+        <div style="height: 8px;"></div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn primary" type="submit">💾 ${isEdit ? 'Update' : 'Simpan'} Item</button>
+            <a class="btn" href="/items">❌ Batal</a>
+        </div>
+    </form>
+    </div>
+    `;
+    %>
+    <%- include("layout", { title: isEdit ? "Edit Item" : "Tambah Item" , body, user }) %>

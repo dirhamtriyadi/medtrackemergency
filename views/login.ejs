@@ -1,0 +1,49 @@
+<% const body=` 
+    <div style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div class="card" style="max-width:480px; margin:0 auto;">
+        <div style="text-align: center; margin-bottom: 32px;">
+            <div style="font-size: 56px; margin-bottom: 16px;">🔐</div>
+            <h2 style="font-size: 28px; font-weight: 800; margin: 0 0 8px 0; letter-spacing: -.5px;">Selamat Datang</h2>
+            <div class="sub" style="font-size: 15px;">Masuk untuk mengelola stok & melihat alert inventory</div>
+        </div>
+
+        ${ (typeof error !== "undefined" && error) ? `
+        <div class="alert danger" style="margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">⚠️</span>
+                <span>${error}</span>
+            </div>
+        </div>` : "" }
+
+        <form class="form" method="post" action="/login">
+            <div class="field">
+                <label>👤 Username</label>
+                <input class="input" name="username" required autocomplete="username" placeholder="Masukkan username..." />
+            </div>
+            <div class="field">
+                <label>🔑 Password</label>
+                <input class="input" name="password" type="password" required autocomplete="current-password" placeholder="Masukkan password..." />
+            </div>
+            <button class="btn primary" type="submit" style="width: 100%; justify-content: center; padding: 14px;">
+                🚀 Masuk ke Dashboard
+            </button>
+        </form>
+
+        <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center;">
+            <div class="sub" style="font-size: 13px;">
+                Default credentials untuk testing:
+            </div>
+            <div style="margin-top: 12px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <span class="badge" style="font-size: 13px;">
+                    <span style="color: var(--muted);">User:</span> <b>admin</b>
+                </span>
+                <span class="badge" style="font-size: 13px;">
+                    <span style="color: var(--muted);">Pass:</span> <b>admin123</b>
+                </span>
+            </div>
+        </div>
+    </div>
+    </div>
+    `;
+    %>
+    <%- include("layout", { title: "Login" , body, user }) %>
