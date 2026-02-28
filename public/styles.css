@@ -446,3 +446,90 @@ input::placeholder{
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255,255,255,.25);
 }
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  /* Hide navigation, forms, and buttons when printing */
+  .nav,
+  .form,
+  .btn,
+  button,
+  .table-actions {
+    display: none !important;
+  }
+  
+  /* Show print header */
+  .print-header {
+    display: block !important;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #333;
+  }
+  
+  .container {
+    max-width: none;
+    padding: 20px;
+  }
+  
+  .card {
+    border: none;
+    box-shadow: none;
+    background: white;
+    padding: 0;
+  }
+  
+  .card h3 {
+    color: #333;
+    margin-bottom: 16px;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th,
+  .table td {
+    border: 1px solid #333;
+    padding: 8px;
+    text-align: left;
+    color: black;
+    background: white;
+  }
+  
+  .table th {
+    background: #f0f0f0 !important;
+    font-weight: bold;
+  }
+  
+  .badge {
+    border: 1px solid #666;
+    color: black;
+    background: white;
+  }
+  
+  /* Page break settings */
+  .table {
+    page-break-inside: auto;
+  }
+  
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  
+  thead {
+    display: table-header-group;
+  }
+  
+  /* Ensure proper sizing */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

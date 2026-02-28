@@ -13,7 +13,15 @@
         <div style="display:flex; gap:12px; flex-wrap:wrap;">
             <a class="btn primary" href="/items/new">➕ Tambah Item</a>
             <button class="btn" onclick="window.print()">🖨️ Print</button>
+            <button class="btn" onclick="downloadCSV()">💾 Download CSV</button>
+            <button class="btn" onclick="exportToExcel()">📊 Export Excel</button>
         </div>
+    </div>
+
+    <!-- Print Header (hanya muncul saat print) -->
+    <div class="print-header" style="display: none;">
+        <h2 style="text-align: center; margin: 0 0 8px 0;">LAPORAN KETERSEDIAAN OBAT DAN ALAT TROLI EMERGENCY</h2>
+        <div id="print-datetime" style="text-align: center; font-size: 14px; color: #666; margin-bottom: 24px;"></div>
     </div>
 
     <form method="get" action="/items" class="form">
@@ -86,6 +94,184 @@
     </table>
     </div>
     </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script>
+    // Set datetime untuk print header
+    function setPrintDateTime() {
+        const now = new Date();
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        
+        const dayName = days[now.getDay()];
+        const date = now.getDate();
+        const month = months[now.getMonth()];
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        const datetime = dayName + ', ' + date + ' ' + month + ' ' + year + ' - Waktu ' + hours + '.' + minutes + ' WIB';
+        document.getElementById('print-datetime').textContent = datetime;
+    }
+
+    // Fungsi download CSV
+    function downloadCSV() {
+        setPrintDateTime();
+        const now = new Date();
+        const items = ${JSON.stringify(items || [])};
+        
+        // Header CSV
+        let csv = 'No,Kategori,Nama Obat,Jumlah Ketersediaan,Unit,Min Stock,Kadaluarsa\\n';
+        
+        // Data rows
+        items.forEach((item, index) => {
+            const exp = item.expiredAt ? new Date(item.expiredAt).toISOString().slice(0, 10) : '-';
+            csv += (index + 1) + ',"' + item.category + '","' + item.name + '",' + 
+                   item.stock + ',"' + item.unit + '",' + item.minStock + ',"' + exp + '"\\n';
+        });
+        
+        // Create download
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        
+        const filename = 'Laporan_Inventory_' + now.getFullYear() + 
+                        String(now.getMonth() + 1).padStart(2, '0') + 
+                        String(now.getDate()).padStart(2, '0') + '_' +
+                        String(now.getHours()).padStart(2, '0') + 
+                        String(now.getMinutes()).padStart(2, '0') + '.csv';
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Set datetime saat halaman load dan sebelum print
+    window.addEventListener('load', setPrintDateTime);
+    window.addEventListener('beforeprint', setPrintDateTime);
+
+    // Fungsi Export ke Excel dengan format sesuai gambar
+    function exportToExcel() {
+        const now = new Date();
+        const items = ${JSON.stringify(items || [])};
+        
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        
+        const dayName = days[now.getDay()];
+        const date = now.getDate();
+        const month = months[now.getMonth()];
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        
+        // Group items by category
+        const categories = ['Drug', 'Circulation', 'Airway', 'Breathing', 'Fluid'];
+        const groupedItems = {};
+        categories.forEach(cat => {
+            groupedItems[cat] = items.filter(item => item.category === cat);
+        });
+        
+        // Format date untuk kadaluarsa (misal: 15-Jun-27)
+        function formatExpDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            const day = d.getDate();
+            const month = monthsShort[d.getMonth()];
+            const year = String(d.getFullYear()).slice(-2);
+            return day + '-' + month + '-' + year;
+        }
+        
+        // Create worksheet data
+        const ws_data = [];
+        
+        // Header
+        ws_data.push(['LAPORAN KETERSEDIAAN OBAT DAN ALAT TROLI EMERGENCY']);
+        ws_data.push(['', '', dayName + ', ' + date + ' ' + month + ' ' + year]);
+        ws_data.push(['', '', 'Waktu ' + hours + '.' + minutes + ' WIB']);
+        
+        // Add data per category
+        categories.forEach((category, catIndex) => {
+            const categoryItems = groupedItems[category];
+            if (categoryItems.length > 0) {
+                // Category row
+                ws_data.push([catIndex + 1, category, '', '']);
+                // Sub header row
+                ws_data.push(['', 'Nama Obat', 'Jumlah Ketersediaan', 'Kadaluarsa']);
+                
+                // Items rows
+                categoryItems.forEach(item => {
+                    ws_data.push([
+                        '',
+                        item.name,
+                        item.stock,
+                        formatExpDate(item.expiredAt)
+                    ]);
+                });
+            }
+        });
+        
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+        
+        // Set column widths
+        ws['!cols'] = [
+            { wch: 5 },  // Column A (number)
+            { wch: 30 }, // Column B (kategori/nama)
+            { wch: 20 }, // Column C (jumlah)
+            { wch: 15 }  // Column D (expired)
+        ];
+        
+        // Merge cells for header
+        if(!ws['!merges']) ws['!merges'] = [];
+        ws['!merges'].push(
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }, // Header title
+            { s: { r: 1, c: 2 }, e: { r: 1, c: 3 } }, // Date
+            { s: { r: 2, c: 2 }, e: { r: 2, c: 3 } }  // Time
+        );
+        
+        // Apply styles to cells
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        
+        // Style header rows
+        for (let R = 0; R <= 2; R++) {
+            for (let C = 0; C <= 3; C++) {
+                const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+                if (!ws[cell_address]) ws[cell_address] = { t: 's', v: '' };
+                if (R === 0) {
+                    ws[cell_address].s = {
+                        font: { bold: true, sz: 14 },
+                        alignment: { horizontal: 'center', vertical: 'center' }
+                    };
+                } else {
+                    ws[cell_address].s = {
+                        alignment: { horizontal: 'center', vertical: 'center' }
+                    };
+                }
+            }
+        }
+        
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(wb, ws, 'Laporan Inventory');
+        
+        // Generate filename
+        const filename = 'Laporan_Inventory_' + now.getFullYear() + 
+                        String(now.getMonth() + 1).padStart(2, '0') + 
+                        String(now.getDate()).padStart(2, '0') + '_' +
+                        String(now.getHours()).padStart(2, '0') + 
+                        String(now.getMinutes()).padStart(2, '0') + '.xlsx';
+        
+        // Save file
+        XLSX.writeFile(wb, filename);
+    }
+    </script>
     `;
     %>
     <%- include("layout", { title: "Items" , body, user }) %>

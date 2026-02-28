@@ -29,6 +29,7 @@ export class ItemsController {
         items,
         q: q || "",
         category: category || "",
+        user: req.session.user,
       });
     } catch (error) {
       console.error("Items index error:", error);
@@ -41,7 +42,7 @@ export class ItemsController {
    * Tampilkan form tambah item baru
    */
   static showCreateForm(req: Request, res: Response) {
-    res.render("item_form", { item: null });
+    res.render("item_form", { item: null, user: req.session.user });
   }
 
   /**
@@ -57,6 +58,7 @@ export class ItemsController {
         return res.render("item_form", {
           item: req.body,
           error: "Nama dan kategori harus diisi",
+          user: req.session.user,
         });
       }
 
@@ -78,6 +80,7 @@ export class ItemsController {
       res.render("item_form", {
         item: req.body,
         error: "Terjadi kesalahan saat menyimpan item",
+        user: req.session.user,
       });
     }
   }
@@ -100,7 +103,7 @@ export class ItemsController {
         return res.redirect("/items");
       }
 
-      res.render("item_form", { item });
+      res.render("item_form", { item, user: req.session.user });
     } catch (error) {
       console.error("Show edit form error:", error);
       res.redirect("/items");
@@ -127,6 +130,7 @@ export class ItemsController {
         return res.render("item_form", {
           item: { ...item, ...req.body },
           error: "Nama dan kategori harus diisi",
+          user: req.session.user,
         });
       }
 
