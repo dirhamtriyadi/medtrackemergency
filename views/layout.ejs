@@ -7,7 +7,17 @@
     <title>
         <%= title || "EMS Stock" %>
     </title>
-    <link rel="stylesheet" href="/public/styles.css" />
+    <link rel="stylesheet" href="/public/styles.css?v=<%= Date.now() %>" />
+    <style>
+        /* Inline critical CSS untuk testing */
+        body { 
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(180deg, #0a0e1a 0%, #060911 100%);
+            color: #f0f4f9;
+            min-height: 100vh;
+        }
+    </style>
 </head>
 
 <body>
