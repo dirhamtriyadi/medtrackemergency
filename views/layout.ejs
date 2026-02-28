@@ -5,28 +5,20 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>
-        <%= title || "EMS Stock" %>
+        <%= title || "MedTrackEmergency" %>
     </title>
     <link rel="stylesheet" href="/public/styles.css?v=<%= Date.now() %>" />
-    <style>
-        /* Inline critical CSS untuk testing */
-        body { 
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(180deg, #0a0e1a 0%, #060911 100%);
-            color: #f0f4f9;
-            min-height: 100vh;
-        }
-    </style>
 </head>
 
 <body>
     <div class="nav">
         <div class="nav-inner">
             <div class="brand">
-                <div class="logo">📦</div>
+                <div class="logo">
+                    <img src="/public/logo.jpeg" alt="Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;" />
+                </div>
                 <div>
-                    <div style="font-size: 18px; font-weight: 700;">EMS Stock</div>
+                    <div style="font-size: 18px; font-weight: 700;">MedTrackEmergency</div>
                     <div class="sub">
                         Inventory & Alert System
                     </div>
