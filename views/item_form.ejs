@@ -20,11 +20,17 @@
                 <input class="input" name="name" required value="${item?.name || ""}" placeholder="Contoh: Paracetamol 500mg" />
             </div>
             <div class="field">
-                <label>📂 Kategori</label>
-                <select class="input" name="category" required>
+                <label style="font-size: 16px; font-weight: 700;">📂 Kategori</label>
+                <select class="input" name="category" required style="font-size: 16px; font-weight: 600;">
                     <option value="">Pilih kategori...</option>
-                    ${["Drug","Circulation","Airway","Breathing","Fluid"].map(cat =>
-                    `<option value="${cat}" ${item?.category===cat ? "selected" :""}>${cat}</option>`
+                    ${[
+                        {val: "Drug", label: "💊 Drug"},
+                        {val: "Circulation", label: "❤️ Circulation"},
+                        {val: "Airway", label: "🫁 Airway"},
+                        {val: "Breathing", label: "💨 Breathing"},
+                        {val: "Fluid", label: "💧 Fluid"}
+                    ].map(cat =>
+                    `<option value="${cat.val}" ${item?.category===cat.val ? "selected" :""}>${cat.label}</option>`
                     ).join("")}
                 </select>
             </div>

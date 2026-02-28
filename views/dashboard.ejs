@@ -173,9 +173,12 @@
             <div style="height:16px"></div>
 
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <% (countsByCategory || []).forEach(c=> { %>
-                    <span class="badge" style="font-size: 14px;">
-                        <%= c.category %>: <b style="color: var(--accent);">
+                <% 
+                const catEmoji = {Drug: '💊', Circulation: '❤️', Airway: '🫁', Breathing: '💨', Fluid: '💧'};
+                (countsByCategory || []).forEach(c=> { 
+                %>
+                    <span class="badge" style="font-size: 16px; font-weight: 700; padding: 10px 16px;">
+                        <%= catEmoji[c.category] || '📦' %> <%= c.category %>: <b style="color: var(--accent);">
                                 <%= c._count._all %>
                             </b>
                     </span>
@@ -193,12 +196,12 @@
             <div style="height:16px"></div>
 
             <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                <a class="btn primary" href="/items">📋 Kelola Items</a>
-                <a class="btn" href="/items?category=Drug">💊 Drug</a>
-                <a class="btn" href="/items?category=Circulation">❤️ Circulation</a>
-                <a class="btn" href="/items?category=Airway">🫁 Airway</a>
-                <a class="btn" href="/items?category=Breathing">💨 Breathing</a>
-                <a class="btn" href="/items?category=Fluid">💧 Fluid</a>
+                <a class="btn primary" href="/items" style="font-size: 15px; padding: 12px 20px;">📋 Kelola Items</a>
+                <a class="btn" href="/items?category=Drug" style="font-size: 15px; font-weight: 600; padding: 12px 20px;">💊 Drug</a>
+                <a class="btn" href="/items?category=Circulation" style="font-size: 15px; font-weight: 600; padding: 12px 20px;">❤️ Circulation</a>
+                <a class="btn" href="/items?category=Airway" style="font-size: 15px; font-weight: 600; padding: 12px 20px;">🫁 Airway</a>
+                <a class="btn" href="/items?category=Breathing" style="font-size: 15px; font-weight: 600; padding: 12px 20px;">💨 Breathing</a>
+                <a class="btn" href="/items?category=Fluid" style="font-size: 15px; font-weight: 600; padding: 12px 20px;">💧 Fluid</a>
             </div>
         </div>
     </div>
