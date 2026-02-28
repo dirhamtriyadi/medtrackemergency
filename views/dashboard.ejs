@@ -1,5 +1,34 @@
-<%- include("layout", { title: "Dashboard" , body: null, user }) %>
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard - EMS Stock</title>
+    <link rel="stylesheet" href="/public/styles.css?v=<%= Date.now() %>" />
+</head>
+<body>
+    <div class="nav">
+        <div class="nav-inner">
+            <div class="brand">
+                <div class="logo">📦</div>
+                <div>
+                    <div style="font-size: 18px; font-weight: 700;">EMS Stock</div>
+                    <div class="sub">Inventory & Alert System</div>
+                </div>
+            </div>
+            <div class="nav-links">
+                <% if (user) { %>
+                    <a class="pill" href="/dashboard">📊 Dashboard</a>
+                    <a class="pill" href="/items">📋 Items</a>
+                    <form method="post" action="/logout" style="margin:0">
+                        <button class="btn ghost" type="submit">🚪 Logout</button>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </div>
 
+    <div class="container">
     <div style="margin-bottom: 24px;">
         <h1 style="font-size: 32px; font-weight: 800; margin: 0 0 8px 0; letter-spacing: -.5px;">Dashboard</h1>
         <p style="color: var(--muted); margin: 0; font-size: 16px;">Monitoring stok dan alert sistem inventory</p>
@@ -153,3 +182,6 @@
             </div>
         </div>
     </div>
+    </div>
+</body>
+</html>
