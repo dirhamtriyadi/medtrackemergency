@@ -44,8 +44,8 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Nama Item</th>
                 <th>Kategori</th>
+                <th>Nama Item</th>
                 <th>Stok</th>
                 <th>Min Stok</th>
                 <th>Tanggal Expired</th>
@@ -64,8 +64,8 @@
             ` : (items || []).map(it => {
             const low = it.stock < it.minStock; const exp=it.expiredAt ? it.expiredAt.toISOString().slice(0,10) : "-" ;
                 return ` <tr>
+                <td><span class="badge">${it.category}</span></td>  
                 <td style="font-weight: 600;">${it.name}</td>
-                <td><span class="badge">${it.category}</span></td>
                 <td>
                     <span style="font-weight: 600; color: ${low ? '#ff9090' : 'var(--ok)'};">${it.stock} ${it.unit}</span>
                     ${low ? `<span class="badge danger" style="margin-left: 8px;">⚠️ Low</span>` : ""}

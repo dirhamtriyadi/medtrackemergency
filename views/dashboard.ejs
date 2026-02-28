@@ -34,6 +34,82 @@
         <p style="color: var(--muted); margin: 0; font-size: 16px;">Monitoring stok dan alert sistem inventory</p>
     </div>
 
+    <!-- Alerts -->
+    <div class="card col-12" style="margin-bottom: 24px;">
+        <h3>🚨 Alert & Notifikasi</h3>
+        <div class="sub" style="margin-bottom: 16px;">Monitoring item yang memerlukan perhatian</div>
+    
+        <div class="grid" style="grid-template-columns:1fr 1fr; gap:16px">
+            <div class="alert <%= (lowStock || []).length ? " danger" : "ok" %>">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span style="font-size: 20px;">
+                        <%= (lowStock || []).length> 0 ? '⚠️' : '✅' %>
+                    </span>
+                    <b style="font-size: 16px;">Stok Menipis</b>
+                </div>
+                <div class="sub">
+                    <% if ((lowStock || []).length===0) { %>
+                        Semua item memiliki stok di atas minimum.
+                        <% } else { %>
+                            <div style="font-size: 14px; line-height: 1.8;">
+                                <% (lowStock || []).slice(0,6).forEach(it=> { %>
+                                    <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.05);">
+                                        <span style="font-weight: 600;">
+                                            <%= it.name %>
+                                        </span>
+                                        <span style="color: var(--muted);">—</span>
+                                        <span style="color: #ff9090; font-weight: 600;">
+                                            <%= it.stock %>
+                                                <%= it.unit %>
+                                        </span>
+                                        <span style="color: var(--muted); font-size: 13px;">(min: <%= it.minStock %>)</span>
+                                    </div>
+                                    <% }) %>
+                            </div>
+                            <% if ((lowStock || []).length> 6) { %>
+                                <div class="sub" style="margin-top:12px; font-weight: 500;">
+                                    + <%= (lowStock || []).length - 6 %> item lainnya yang perlu diperhatikan
+                                </div>
+                                <% } %>
+                                    <% } %>
+                </div>
+            </div>
+    
+            <div class="alert <%= (expiring || []).length ? " warn" : "ok" %>">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span style="font-size: 20px;">
+                        <%= (expiring || []).length> 0 ? '⏰' : '✅' %>
+                    </span>
+                    <b style="font-size: 16px;">Expired dalam <%= expSoonDays %> Hari</b>
+                </div>
+                <div class="sub">
+                    <% if ((expiring || []).length===0) { %>
+                        Tidak ada item yang mendekati tanggal expired.
+                        <% } else { %>
+                            <div style="font-size: 14px; line-height: 1.8;">
+                                <% (expiring || []).slice(0,6).forEach(it=> { %>
+                                    <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.05);">
+                                        <span style="font-weight: 600;">
+                                            <%= it.name %>
+                                        </span>
+                                        <span style="color: var(--muted);">—</span>
+                                        <span style="color: #ffc966; font-weight: 600;">
+                                            <%= it.expiredAt ? it.expiredAt.toISOString().slice(0,10) : "-" %>
+                                        </span>
+                                    </div>
+                                    <% }) %>
+                            </div>
+                            <% if ((expiring || []).length> 6) { %>
+                                <div class="sub" style="margin-top:12px; font-weight: 500;">
+                                    + <%= (expiring || []).length - 6 %> item lainnya mendekati expired
+                                </div>
+                                <% } %>
+                                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="grid cards">
         <!-- KPI Cards -->
         <div class="card col-4">
@@ -114,71 +190,6 @@
                 <a class="btn" href="/items?category=Airway">🫁 Airway</a>
                 <a class="btn" href="/items?category=Breathing">💨 Breathing</a>
                 <a class="btn" href="/items?category=Fluid">💧 Fluid</a>
-            </div>
-        </div>
-
-        <!-- Alerts -->
-        <div class="card col-12">
-            <h3>🚨 Alert & Notifikasi</h3>
-            <div class="sub" style="margin-bottom: 16px;">Monitoring item yang memerlukan perhatian</div>
-
-            <div class="grid" style="grid-template-columns:1fr 1fr; gap:16px">
-                <div class="alert <%= (lowStock || []).length ? " danger" : "ok" %>">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <span style="font-size: 20px;"><%= (lowStock || []).length> 0 ? '⚠️' : '✅' %></span>
-                        <b style="font-size: 16px;">Stok Menipis</b>
-                    </div>
-                    <div class="sub">
-                        <% if ((lowStock || []).length===0) { %>
-                            Semua item memiliki stok di atas minimum.
-                            <% } else { %>
-                                <div style="font-size: 14px; line-height: 1.8;">
-                                    <% (lowStock || []).slice(0,6).forEach(it=> { %>
-                                        <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.05);">
-                                            <span style="font-weight: 600;"><%= it.name %></span>
-                                            <span style="color: var(--muted);">—</span>
-                                            <span style="color: #ff9090; font-weight: 600;"><%= it.stock %> <%= it.unit %></span>
-                                            <span style="color: var(--muted); font-size: 13px;">(min: <%= it.minStock %>)</span>
-                                        </div>
-                                        <% }) %>
-                                </div>
-                                <% if ((lowStock || []).length> 6) { %>
-                                    <div class="sub" style="margin-top:12px; font-weight: 500;">
-                                        + <%= (lowStock || []).length - 6 %> item lainnya yang perlu diperhatikan
-                                    </div>
-                                    <% } %>
-                                        <% } %>
-                    </div>
-                </div>
-
-                <div class="alert <%= (expiring || []).length ? " warn" : "ok" %>">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <span style="font-size: 20px;"><%= (expiring || []).length> 0 ? '⏰' : '✅' %></span>
-                        <b style="font-size: 16px;">Expired dalam <%= expSoonDays %> Hari</b>
-                    </div>
-                    <div class="sub">
-                        <% if ((expiring || []).length===0) { %>
-                            Tidak ada item yang mendekati tanggal expired.
-                            <% } else { %>
-                                <div style="font-size: 14px; line-height: 1.8;">
-                                    <% (expiring || []).slice(0,6).forEach(it=> { %>
-                                        <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.05);">
-                                            <span style="font-weight: 600;"><%= it.name %></span>
-                                            <span style="color: var(--muted);">—</span>
-                                            <span style="color: #ffc966; font-weight: 600;">
-                                                <%= it.expiredAt ? it.expiredAt.toISOString().slice(0,10) : "-" %>
-                                            </span>
-                                        </div>
-                                        <% }) %>
-                                </div>
-                                <% if ((expiring || []).length> 6) { %>
-                                    <div class="sub" style="margin-top:12px; font-weight: 500;">
-                                        + <%= (expiring || []).length - 6 %> item lainnya mendekati expired
-                                    </div>
-                                    <% } %>
-                                        <% } %>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
