@@ -35,12 +35,11 @@ export class DashboardController {
           orderBy: { stock: "asc" },
         }),
 
-        // Cari item yang akan expired
+        // Cari item yang sudah expired atau akan expired dalam 30 hari
         prisma.item.findMany({
           where: {
             expiredAt: {
               lte: expSoon,
-              gte: now,
             },
           },
           orderBy: { expiredAt: "asc" },
@@ -55,6 +54,7 @@ export class DashboardController {
         lowStock,
         expiring,
         expSoonDays,
+        user: req.session.user,
       });
     } catch (error) {
       console.error("Dashboard error:", error);

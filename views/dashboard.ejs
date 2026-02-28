@@ -75,33 +75,42 @@
                 </div>
             </div>
     
-            <div class="alert <%= (expiring || []).length ? " warn" : "ok" %>">
+            <div class="alert <%= (expiring || []).length ? " danger" : "ok" %>">
                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
                     <span style="font-size: 20px;">
                         <%= (expiring || []).length> 0 ? '⏰' : '✅' %>
                     </span>
-                    <b style="font-size: 16px;">Expired dalam <%= expSoonDays %> Hari</b>
+                    <b style="font-size: 16px;">Expired / Kadaluarsa ≤ <%= expSoonDays %> Hari</b>
                 </div>
                 <div class="sub">
                     <% if ((expiring || []).length===0) { %>
-                        Tidak ada item yang mendekati tanggal expired.
+                        Tidak ada item yang sudah atau mendekati tanggal expired.
                         <% } else { %>
                             <div style="font-size: 14px; line-height: 1.8;">
-                                <% (expiring || []).slice(0,6).forEach(it=> { %>
+                                <% 
+                                const now = new Date();
+                                (expiring || []).slice(0,6).forEach(it=> { 
+                                    const expDate = it.expiredAt ? new Date(it.expiredAt) : null;
+                                    const isExpired = expDate && expDate < now;
+                                    const color = isExpired ? '#ff5757' : '#ffc966';
+                                %>
                                     <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.05);">
                                         <span style="font-weight: 600;">
                                             <%= it.name %>
                                         </span>
                                         <span style="color: var(--muted);">—</span>
-                                        <span style="color: #ffc966; font-weight: 600;">
+                                        <span style="color: <%= color %>; font-weight: 600;">
                                             <%= it.expiredAt ? it.expiredAt.toISOString().slice(0,10) : "-" %>
                                         </span>
+                                        <% if (isExpired) { %>
+                                            <span style="color: #ff5757; font-size: 12px; font-weight: 600;">⚠ EXPIRED</span>
+                                        <% } %>
                                     </div>
                                     <% }) %>
                             </div>
                             <% if ((expiring || []).length> 6) { %>
                                 <div class="sub" style="margin-top:12px; font-weight: 500;">
-                                    + <%= (expiring || []).length - 6 %> item lainnya mendekati expired
+                                    + <%= (expiring || []).length - 6 %> item lainnya
                                 </div>
                                 <% } %>
                                     <% } %>
@@ -144,13 +153,13 @@
         <div class="card col-4">
             <div class="kpi">
                 <div>
-                    <div class="lbl">⏰ Expired ≤ <%= expSoonDays %> Hari</div>
-                    <div class="num" style="<%= (expiring || []).length > 0 ? 'color: #ffc966;' : '' %>">
+                    <div class="lbl">⏰ Expired / Kadaluarsa</div>
+                    <div class="num" style="<%= (expiring || []).length > 0 ? 'color: #ff9090;' : '' %>">
                         <%= (expiring || []).length %>
                     </div>
                 </div>
                 <% if ((expiring || []).length> 0) { %>
-                    <span class="badge warn">⚡ Cek</span>
+                    <span class="badge danger">⚠ Perhatian</span>
                     <% } else { %>
                         <span class="badge ok">✓ Aman</span>
                         <% } %>
