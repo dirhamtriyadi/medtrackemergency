@@ -170,17 +170,16 @@
 
         <!-- Ringkasan kategori -->
         <div class="card col-6">
-            <h3>📊 Ringkasan Kategori</h3>
+            <h3>Ringkasan Kategori</h3>
             <div class="sub">Distribusi item berdasarkan kategori</div>
             <div style="height:16px"></div>
 
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <% 
-                const catEmoji = {Drug: '💊', Circulation: '❤️', Airway: '🫁', Breathing: '💨', Fluid: '💧'};
+                <%
                 (countsByCategory || []).forEach(c=> { 
                 %>
                     <span class="badge" style="font-size: 16px; font-weight: 700; padding: 10px 16px;">
-                        <%= catEmoji[c.category] || '📦' %> <%= c.category %>: <b style="color: var(--accent);">
+                        <%= c.category %>: <b style="color: var(--accent);">
                                 <%= c._count._all %>
                             </b>
                     </span>
@@ -198,12 +197,12 @@
             <div style="height:16px"></div>
 
             <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                <a class="btn primary" href="/items" style="font-size: 17px; padding: 16px 28px;">📋 Kelola Items</a>
-                <a class="btn" href="/items?category=Drug" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">💊 Drug</a>
-                <a class="btn" href="/items?category=Circulation" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">❤️ Circulation</a>
-                <a class="btn" href="/items?category=Airway" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">🫁 Airway</a>
-                <a class="btn" href="/items?category=Breathing" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">💨 Breathing</a>
-                <a class="btn" href="/items?category=Fluid" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">💧 Fluid</a>
+                <a class="btn primary" href="/items" style="font-size: 17px; padding: 16px 28px;">Kelola Items</a>
+                <a class="btn" href="/items?category=Drug" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">Drug</a>
+                <a class="btn" href="/items?category=Circulation" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">Circulation</a>
+                <a class="btn" href="/items?category=Airway" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">Airway</a>
+                <a class="btn" href="/items?category=Breathing" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">Breathing</a>
+                <a class="btn" href="/items?category=Fluid" style="font-size: 17px; font-weight: 600; padding: 16px 28px;">Fluid</a>
             </div>
         </div>
     </div>
